@@ -1,15 +1,15 @@
 /* style.css */
 
 body {
-  background-color: #f7f7f7;
+  background-color: #333;
   font-family: Arial, sans-serif;
+  color: #fff;
   margin: 0;
   padding: 0;
 }
 
 #intro {
   background-color: #333;
-  color: #fff;
   padding: 20px;
   text-align: center;
 }
@@ -26,20 +26,39 @@ body {
   border-radius: 5px;
 }
 
+#messages li span.username {
+  font-size: 13px;
+  font-weight: bold;
+}
+
 #messages li.user-message {
-  background-color: #f0f0f0;
+  font-size: 15px;
+  background-color: #3c3c3c;
   text-align: right;
   align-self: flex-end;
 }
 
 #messages li.other-message {
-  background-color: #e0e0e0;
+  font-size: 15px;
+  background-color: #393939;
   text-align: left;
   align-self: flex-start;
 }
 
+#messages li.join-message {
+  background-color: darkolivegreen;
+  text-align: center;
+  align-self: flex-start;
+}
+
+#messages li.left-message {
+  background-color: coral;
+  text-align: center;
+  align-self: flex-start;
+}
+
 form {
-  background-color: #fff;
+  background-color: #333;
   padding: 20px;
   display: flex;
 }

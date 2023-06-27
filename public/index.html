@@ -16,11 +16,25 @@
 
     <ul id="messages"></ul>
 
-    <form action=""><input id="m" placeholder="Type a message" autocomplete="off" required /><button>Send</button></form>
+    <form action="">
+      <input id="m" placeholder="Type a message" autocomplete="off" required /><button>Send</button>
+    </form>
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script>
+      const usernameColors = {}
+
+      const getRandomColor = () => {
+        // Generate a random color in hexadecimal format
+        const letters = '0123456789ABCDEF'
+        let color = '#'
+        for (let i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)]
+        }
+        return color
+      }
+
       const socket = io()
 
       socket.emit('joining msg', name)
@@ -28,14 +42,38 @@
       $('form').submit(function (e) {
         e.preventDefault() // will prevent page reloading
         const message = $('#m').val()
-        socket.emit('chat message', `${name}: ${message}`)
-        $('#messages').append($('<li>').text(`You: ${message}`).addClass('user-message'))
+        socket.emit('chat message', { name, message })
+        $('#messages').append($('<li>').addClass('user-message').text(message))
         $('#m').val('')
         return false
       })
 
+      socket.on('join message', function (msg) {
+        $('#messages').append($('<li>').text(msg).addClass('join-message'))
+      })
+
+      socket.on('left message', function (msg) {
+        $('#messages').append($('<li>').text(msg).addClass('left-message'))
+      })
+
       socket.on('chat message', function (msg) {
-        $('#messages').append($('<li>').text(msg).addClass('other-message'))
+        const { name, message } = msg
+        const usernameClass = 'username'
+
+        let userColor = usernameColors[name]
+        if (!userColor) {
+          // If the user doesn't have a color assigned, generate a random color
+          userColor = getRandomColor()
+          usernameColors[name] = userColor
+        }
+
+        $('#messages').append(
+          $('<li>')
+            .addClass('other-message')
+            .append($('<span>').addClass(usernameClass).css('color', userColor).text(name))
+            .append($('<br>'))
+            .append($('<span>').text(message))
+        )
       })
     </script>
   </body>
