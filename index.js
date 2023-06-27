@@ -16,17 +16,25 @@ app.get('/', (req, res) => {
 let name
 
 io.on('connection', (socket) => {
-  console.log('new user connected')
-
   socket.on('joining msg', (username) => {
     name = username
-    io.emit('chat message', `[${name}] joined the chat`)
+    console.log(`new user connected: ${name}`)
+    io.emit('join message', `${name} joined the chat`)
   })
 
   socket.on('disconnect', () => {
     console.log('user disconnected')
-    io.emit('chat message', `[${name}] left the chat`)
+    io.emit('left message', `${name} left the chat`)
   })
+
+  socket.on('join message', (msg) => {
+    socket.broadcast.emit('join message', msg)
+  })
+
+  socket.on('left message', (msg) => {
+    socket.broadcast.emit('left message', msg)
+  })
+
   socket.on('chat message', (msg) => {
     socket.broadcast.emit('chat message', msg) //sending message to all except the sender
   })
