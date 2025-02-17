@@ -17,3 +17,11 @@ resources:
   requests:
     cpu: 200m
     memory: 256Mi
+
+redis:
+  master:
+    persistence:
+      enabled: false
+  replica:
+    persistence:
+      enabled: false
