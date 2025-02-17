@@ -12,6 +12,10 @@ spec:
       labels:
         app: chat-web-app
     spec:
+      initContainers:
+        - name: check-redis
+          image: busybox
+          command: ['sh', '-c', 'until nc -z chat-web-app-redis-master 6379; do echo waiting for redis; sleep 2; done;']
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
