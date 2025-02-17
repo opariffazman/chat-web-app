@@ -13,19 +13,22 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/index.html')
 })
 
-let name
+const users = new Map()
 
 io.on('connection', (socket) => {
   socket.on('joining msg', (username) => {
-    name = username
-    console.log(`new user connected: ${name}`)
-    io.emit('join message', `${name} joined the chat`)
+    users.set(socket.id, username)
+    console.log(`new user connected: ${username}`)
+    io.emit('join message', `${username} joined the chat`)
   })
 
-  socket.on('disconnect', (username) => {
-    name = username
-    console.log(`user disconnected: ${name}`)
-    io.emit('left message', `${name} left the chat`)
+  socket.on('disconnect', () => {
+    const username = users.get(socket.id)
+    if (username) {
+      console.log(`user disconnected: ${username}`)
+      io.emit('left message', `${username} left the chat`)
+      users.delete(socket.id)
+    }
   })
 
   socket.on('join message', (msg) => {
