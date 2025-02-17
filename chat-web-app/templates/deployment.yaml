@@ -20,3 +20,9 @@ spec:
             - containerPort: 3005
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: chat-app-redis
+                  key: redis-password

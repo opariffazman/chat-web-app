@@ -10,8 +10,9 @@ const io = require('socket.io')(server)
 
 // Redis setup
 const pubClient = new Redis({
-  host: 'redis-service',
-  port: 6379
+  host: 'chat-app-redis-master',
+  port: 6379,
+  password: process.env.REDIS_PASSWORD
 })
 const subClient = pubClient.duplicate()
 
