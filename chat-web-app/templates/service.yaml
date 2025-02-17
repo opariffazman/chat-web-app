@@ -1,15 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "chat-web-app.fullname" . }}
-  labels:
-    {{- include "chat-web-app.labels" . | nindent 4 }}
+  name: {{ .Release.Name }}-chat-web-app
 spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: http
+      targetPort: {{ .Values.service.targetPort }}
       protocol: TCP
-      name: http
   selector:
-    {{- include "chat-web-app.selectorLabels" . | nindent 4 }}
+    app: chat-web-app
