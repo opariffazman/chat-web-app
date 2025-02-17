@@ -25,7 +25,18 @@ pubClient.on('connect', () => {
 
 const subClient = pubClient.duplicate()
 
-io.adapter(createAdapter(pubClient, subClient))
+io.configure(() => {
+  io.set('heartbeat timeout', 10000)
+  io.set('heartbeat interval', 5000)
+})
+
+io.adapter(
+  createAdapter(pubClient, subClient, {
+    requestsTimeout: 5000,
+    publishTimeout: 2000
+  })
+)
+
 const path = require('path')
 
 app.use(express.static(path.join(__dirname, './public')))
@@ -41,6 +52,11 @@ io.on('connection', (socket) => {
     users.set(socket.id, username)
     console.log(`new user connected: ${username}`)
     io.emit('join message', `${username} joined the chat`)
+  })
+
+  socket.on('chat message', (msg, callback) => {
+    socket.broadcast.emit('chat message', msg)
+    callback({ status: 'ok' })
   })
 
   socket.on('disconnect', () => {
