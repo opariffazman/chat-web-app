@@ -22,8 +22,9 @@ io.on('connection', (socket) => {
     io.emit('join message', `${name} joined the chat`)
   })
 
-  socket.on('disconnect', () => {
-    console.log('user disconnected')
+  socket.on('disconnect', (username) => {
+    name = username
+    console.log(`user disconnected: ${name}`)
     io.emit('left message', `${name} left the chat`)
   })
 
