@@ -1,10 +1,21 @@
 const express = require('express')
 const http = require('http')
+const Redis = require('ioredis')
+const { createAdapter } = require('@socket.io/redis-adapter')
 
 const app = express()
 const server = http.createServer(app)
 
 const io = require('socket.io')(server)
+
+// Redis setup
+const pubClient = new Redis({
+  host: 'redis-service',
+  port: 6379
+})
+const subClient = pubClient.duplicate()
+
+io.adapter(createAdapter(pubClient, subClient))
 const path = require('path')
 
 app.use(express.static(path.join(__dirname, './public')))
