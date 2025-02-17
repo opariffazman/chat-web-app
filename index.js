@@ -10,10 +10,19 @@ const io = require('socket.io')(server)
 
 // Redis setup
 const pubClient = new Redis({
-  host: 'chat-app-redis-master',
+  host: 'chat-web-app-redis-master',
   port: 6379,
   password: process.env.REDIS_PASSWORD
 })
+
+pubClient.on('error', (err) => {
+  console.log('Redis Client Error:', err)
+})
+
+pubClient.on('connect', () => {
+  console.log('Redis Client Connected')
+})
+
 const subClient = pubClient.duplicate()
 
 io.adapter(createAdapter(pubClient, subClient))
